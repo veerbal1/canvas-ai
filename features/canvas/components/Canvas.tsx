@@ -61,14 +61,21 @@ export const Canvas = forwardRef<CanvasRef, CanvasProps>((
     if (canvas) {
       const ctx = canvas.getContext('2d');
       if (ctx) {
+        // Initial white background fill
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Set drawing properties
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
         ctx.lineWidth = lineWidth;
         ctx.strokeStyle = strokeColor;
+        
         setContext(ctx);
       }
     }
-  }, [lineWidth, strokeColor]); // Re-run if props change
+    // Depend on dimensions as well, in case they change and require redraw/refill
+  }, [width, height, lineWidth, strokeColor]);
 
   // Update context properties if props change AFTER initial setup
   useEffect(() => {
