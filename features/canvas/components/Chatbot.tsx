@@ -7,7 +7,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
-export const Chatbot: React.FC = () => {
+// Define props, including the canvas data getter
+interface ChatbotProps {
+    onGetCanvasData: () => string | null;
+}
+
+export const Chatbot: React.FC<ChatbotProps> = ({ onGetCanvasData }) => {
     const { messages, input, handleInputChange, handleSubmit, status } = useChat({
         // api: '/api/chat' // Default endpoint, adjust if needed
     });
@@ -20,6 +25,18 @@ export const Chatbot: React.FC = () => {
             messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
         }
     }, [messages]);
+
+    // Custom submit handler to inject canvas data
+    const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault(); // Prevent default form submission
+        const imageDataUrl = onGetCanvasData(); // Get current canvas image
+        
+        // Prepare data payload (only include image if it exists)
+        const payloadData = imageDataUrl ? { imageDataUrl } : undefined;
+
+        // Call the original handleSubmit from useChat with the event and optional data
+        handleSubmit(event, { data: payloadData }); 
+    };
 
     return (
         <Card className="w-full h-full flex flex-col overflow-hidden">
@@ -48,7 +65,7 @@ export const Chatbot: React.FC = () => {
                 </div>
             </CardContent>
             <CardFooter className="p-4 border-t flex-shrink-0">
-                <form onSubmit={handleSubmit} className="flex w-full items-center space-x-2">
+                <form onSubmit={handleFormSubmit} className="flex w-full items-center space-x-2">
                     <Input
                         value={input}
                         onChange={handleInputChange}

@@ -12,6 +12,11 @@ export const CanvasAI = () => {
     canvasRef.current?.clear();
   };
 
+  // Function to get the current canvas image data URL
+  const getCanvasDataUrl = (): string | null => {
+    return canvasRef.current?.getImageDataUrl() ?? null;
+  };
+
   return (
     <div className="w-full h-full bg-white/50 rounded-lg p-4 border backdrop-blur-lg shadow-2xl flex gap-4 overflow-hidden">
       <div className="w-1/2 h-full p-4 flex flex-col gap-4">
@@ -33,7 +38,7 @@ export const CanvasAI = () => {
       </div>
       <Separator orientation="vertical" />
       <div className="w-1/2 h-full">
-        <Chatbot />
+        <Chatbot onGetCanvasData={getCanvasDataUrl} />
       </div>
     </div>
   );

@@ -13,6 +13,7 @@ interface CanvasProps {
 // Define the type for the imperative methods we want to expose
 export interface CanvasRef {
   clear: () => void;
+  getImageDataUrl: () => string | null;
 }
 
 // Wrap component definition with forwardRef
@@ -34,9 +35,25 @@ export const Canvas = forwardRef<CanvasRef, CanvasProps>((
   useImperativeHandle(ref, () => ({
     clear: () => {
       if (context && canvasRef.current) {
+        // Clear the canvas (makes it transparent)
         context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+        
+        // Fill the canvas with white
+        context.fillStyle = 'white'; // Set fill color to white
+        context.fillRect(0, 0, canvasRef.current.width, canvasRef.current.height); // Fill the entire canvas
       }
     },
+    getImageDataUrl: (): string | null => {
+      if (canvasRef.current) {
+        try {
+          return canvasRef.current.toDataURL();
+        } catch (error) {
+          console.error("Error getting canvas data URL:", error);
+          return null;
+        }
+      }
+      return null;
+    }
   }));
 
   useEffect(() => {
@@ -105,7 +122,7 @@ export const Canvas = forwardRef<CanvasRef, CanvasProps>((
       onMouseMove={draw}
       onMouseUp={endDrawing}
       onMouseLeave={endDrawing} // End drawing if mouse leaves canvas
-      className={`bg-white ${className}`}
+      className={`bg-white ${className} cursor-crosshair`}
     />
   );
 });
