@@ -126,3 +126,21 @@ body,
 :root {
   height: 100%;
 }
+
+/* Floating animation */
+@keyframes float {
+  0% {
+    transform: translate(0, 0px) rotate(0deg);
+  }
+  50% {
+    transform: translate(5px, -10px) rotate(3deg);
+  }
+  100% {
+    transform: translate(0, 0px) rotate(0deg);
+  }
+}
+
+/* Class to apply the float animation directly */
+.animate-float-custom {
+  animation: float 6s ease-in-out infinite;
+}
