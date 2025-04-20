@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import Markdown from '@/components/ui/markdown';
 
 // Define props, including the canvas data getter
 interface ChatbotProps {
@@ -58,7 +59,7 @@ export const Chatbot: React.FC<ChatbotProps> = ({ onGetCanvasData }) => {
                                         : 'bg-muted'
                                 )}
                             >
-                                <p className="text-sm whitespace-pre-wrap">{m.content}</p>
+                                <Markdown content={m.content} />
                             </div>
                         </div>
                     ))}
