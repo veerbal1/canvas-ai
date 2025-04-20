@@ -22,7 +22,7 @@ export const Canvas = forwardRef<CanvasRef, CanvasProps>((
     width = 800,
     height = 600,
     className = '',
-    lineWidth = 2,
+    lineWidth = 4,
     strokeColor = 'black',
   },
   ref
