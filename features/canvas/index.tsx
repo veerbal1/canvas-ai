@@ -51,19 +51,6 @@ export const CanvasAI = () => {
                 <Pencil key={color} color={color} selected={selectedColor === color} onClick={() => setSelectedColor(color)} />
               ))
             }
-            {/* {availableColors.map((color) => (
-            <button
-              key={color}
-              onClick={() => setSelectedColor(color)}
-              title={color}
-              className={cn(
-                "w-6 h-6 rounded-full border-2 cursor-pointer transition-transform duration-100 ease-in-out",
-                color === "white" ? "border-gray-400" : "border-transparent",
-                selectedColor === color ? "ring-2 ring-offset-2 ring-blue-500 scale-110" : "hover:scale-110"
-              )}
-              style={{ backgroundColor: color }}
-            />
-          ))} */}
           </div>
         </div>
 
