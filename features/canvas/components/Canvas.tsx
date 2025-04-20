@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import React, { useRef, useState, useEffect, useCallback, useImperativeHandle, forwardRef } from 'react';
 
 interface CanvasProps {
   width?: number;
@@ -10,16 +10,34 @@ interface CanvasProps {
   strokeColor?: string;
 }
 
-export const Canvas: React.FC<CanvasProps> = ({
-  width = 800,
-  height = 600,
-  className = '',
-  lineWidth = 2,
-  strokeColor = 'black',
-}) => {
+// Define the type for the imperative methods we want to expose
+export interface CanvasRef {
+  clear: () => void;
+}
+
+// Wrap component definition with forwardRef
+export const Canvas = forwardRef<CanvasRef, CanvasProps>((
+  {
+    width = 800,
+    height = 600,
+    className = '',
+    lineWidth = 2,
+    strokeColor = 'black',
+  },
+  ref
+) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
+
+  // Expose the clear method using useImperativeHandle
+  useImperativeHandle(ref, () => ({
+    clear: () => {
+      if (context && canvasRef.current) {
+        context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+      }
+    },
+  }));
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -34,6 +52,14 @@ export const Canvas: React.FC<CanvasProps> = ({
       }
     }
   }, [lineWidth, strokeColor]); // Re-run if props change
+
+  // Update context properties if props change AFTER initial setup
+  useEffect(() => {
+    if (context) {
+      context.lineWidth = lineWidth;
+      context.strokeStyle = strokeColor;
+    }
+  }, [lineWidth, strokeColor, context]);
 
   const getCoordinates = useCallback((event: React.MouseEvent<HTMLCanvasElement>): { x: number; y: number } => {
     const canvas = canvasRef.current;
@@ -79,7 +105,9 @@ export const Canvas: React.FC<CanvasProps> = ({
       onMouseMove={draw}
       onMouseUp={endDrawing}
       onMouseLeave={endDrawing} // End drawing if mouse leaves canvas
-      className={`border border-gray-300 bg-white ${className}`}
+      className={`bg-white ${className}`}
     />
   );
-}; 
+});
+
+Canvas.displayName = 'Canvas'; // Add display name for DevTools 

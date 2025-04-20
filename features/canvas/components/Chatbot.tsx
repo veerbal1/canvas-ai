@@ -7,27 +7,23 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
-export const Chatbot = () => {
+export const Chatbot: React.FC = () => {
     const { messages, input, handleInputChange, handleSubmit, status } = useChat({
         // api: '/api/chat' // Default endpoint, adjust if needed
     });
 
-    const scrollAreaRef = useRef<HTMLDivElement>(null);
+    const messageContainerRef = useRef<HTMLDivElement>(null);
 
     // Scroll to bottom when messages update
     useEffect(() => {
-        if (scrollAreaRef.current) {
-            // Shadcn ScrollArea nests the scrollable viewport
-            const scrollViewport = scrollAreaRef.current.querySelector('div[data-radix-scroll-area-viewport]');
-            if (scrollViewport) {
-                scrollViewport.scrollTop = scrollViewport.scrollHeight;
-            }
+        if (messageContainerRef.current) {
+            messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
         }
     }, [messages]);
 
     return (
-        <Card className="w-full h-full flex flex-col overflow-hidden"> {/* Added overflow-hidden */}
-            <CardContent className="flex-grow p-4 overflow-y-auto"> {/* Changed to overflow-y-auto, removed ScrollArea */}
+        <Card className="w-full h-full flex flex-col overflow-hidden">
+            <CardContent ref={messageContainerRef} className="flex-grow p-4 overflow-y-auto">
                 <div className="space-y-4">
                     {messages.map((m) => (
                         <div
@@ -45,14 +41,13 @@ export const Chatbot = () => {
                                         : 'bg-muted'
                                 )}
                             >
-                                {/* Render message content safely */}
                                 <p className="text-sm whitespace-pre-wrap">{m.content}</p>
                             </div>
                         </div>
                     ))}
                 </div>
             </CardContent>
-            <CardFooter className="p-4 border-t flex-shrink-0"> {/* Added flex-shrink-0 */}
+            <CardFooter className="p-4 border-t flex-shrink-0">
                 <form onSubmit={handleSubmit} className="flex w-full items-center space-x-2">
                     <Input
                         value={input}
@@ -63,7 +58,7 @@ export const Chatbot = () => {
                     />
                     <Button type="submit" disabled={status === 'streaming'}>
                         {status === 'streaming' ? (
-                            <span className="animate-spin mr-2">⏳</span> // Basic loading spinner 
+                            <span className="animate-spin mr-2">⏳</span>
                         ) : null}
                         Send
                     </Button>
