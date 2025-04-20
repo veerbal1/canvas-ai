@@ -74,8 +74,8 @@ export const Canvas = forwardRef<CanvasRef, CanvasProps>((
         setContext(ctx);
       }
     }
-    // Depend on dimensions as well, in case they change and require redraw/refill
-  }, [width, height, lineWidth, strokeColor]);
+    // Only depend on dimensions and lineWidth for initial setup/refill
+  }, [width, height, lineWidth]);
 
   // Update context properties if props change AFTER initial setup
   useEffect(() => {
